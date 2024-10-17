@@ -1,18 +1,20 @@
 using System.Diagnostics;
 using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace TrafficLight_FSM
 {
+    delegate void SetTextCallback(Control ctr, string text);
+
     public partial class Form1 : Form
     {
         TrafficLight trafficLight;
-        
-
         public Form1()
         {
             InitializeComponent();
 
-            trafficLight = new TrafficLight(pbRed, pbYellow, pbGreen);
+            trafficLight = new TrafficLight(pbRed, pbYellow, pbGreen, lbTimeNow);
 
         }
 
@@ -25,24 +27,29 @@ namespace TrafficLight_FSM
         {
             trafficLight.Stop();
         }
+
     }
 
     enum ETrafficLightState { Idle, Red, Green, Yellow }
 
+
     class TrafficLight
     {
-        ETrafficLightState stateNow;
         PictureBox pbRed, pbYellow, pbGreen;
+        Label lbTime;
+
+        ETrafficLightState stateNow;
         Stopwatch stopwatch;
         Thread thread;
         ManualResetEvent mre;
         bool IsFirst = false;
 
-        public TrafficLight(PictureBox pbRed, PictureBox pbYellow, PictureBox pbGreen)
+        public TrafficLight(PictureBox pbRed, PictureBox pbYellow, PictureBox pbGreen, Label lbTime)
         {
             this.pbRed = pbRed;
             this.pbYellow = pbYellow;
             this.pbGreen = pbGreen;
+            this.lbTime = lbTime;
 
             stateNow = ETrafficLightState.Idle;
 
@@ -78,7 +85,14 @@ namespace TrafficLight_FSM
         {
             while (true)
             {
-                mre.WaitOne();
+                Thread.Sleep(20); // 避免過度佔用 CPU
+
+                mre.WaitOne(); // 等待 Start()中 mre.Set() 的信號
+
+
+                int timeNow = Convert.ToInt32(stopwatch.Elapsed.TotalSeconds);
+                string text = $"Timer : {timeNow}";
+                AsyncSetText(lbTime, text); // 更新碼表stopwatch
 
                 switch (stateNow)
                 {
@@ -95,7 +109,7 @@ namespace TrafficLight_FSM
 
                                 IsFirst = false;
                             }
-                            else if (stopwatch.Elapsed.TotalSeconds >= 2)
+                            else if (timeNow >= 5)
                             {
                                 pbRed.BackColor = Color.Red;
                                 pbGreen.BackColor = Color.Black;
@@ -109,7 +123,7 @@ namespace TrafficLight_FSM
 
                     case ETrafficLightState.Green:
                         {
-                            if (stopwatch.Elapsed.TotalSeconds >= 2)
+                            if (timeNow >= 5)
                             {
                                 pbRed.BackColor = Color.Black;
                                 pbGreen.BackColor = Color.Green;
@@ -123,7 +137,7 @@ namespace TrafficLight_FSM
 
                     case ETrafficLightState.Yellow:
                         {
-                            if (stopwatch.Elapsed.TotalSeconds >= 2)
+                            if (timeNow >= 5)
                             {
                                 pbRed.BackColor = Color.Black;
                                 pbGreen.BackColor = Color.Black;
@@ -138,6 +152,25 @@ namespace TrafficLight_FSM
 
             }
 
+        }
+
+        void AsyncSetText(Control cntr, string text)
+        {
+            try
+            {
+                // 檢查是否需要透過 Invoke 回到 UI 執行緒
+                if (cntr.InvokeRequired)
+                {
+                    SetTextCallback d = new SetTextCallback(AsyncSetText);
+                    cntr.BeginInvoke(d, new object[] { cntr, text });
+                }
+                else
+                    cntr.Text = text;
+            }
+            catch (Exception e)
+            {
+                //WriteLog(DateTime.Now.ToLongTimeString() + " : " + cntr.Name + " , AsyncSetColor " + e.Message);
+            }
         }
     }
 }

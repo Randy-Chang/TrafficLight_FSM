@@ -34,6 +34,7 @@
             gbLight = new GroupBox();
             btnStart = new Button();
             btnStop = new Button();
+            lbTimeNow = new Label();
             ((System.ComponentModel.ISupportInitialize)pbRed).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbYellow).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbGreen).BeginInit();
@@ -82,7 +83,7 @@
             // 
             // btnStart
             // 
-            btnStart.Location = new Point(14, 149);
+            btnStart.Location = new Point(12, 188);
             btnStart.Name = "btnStart";
             btnStart.Size = new Size(124, 65);
             btnStart.TabIndex = 4;
@@ -92,7 +93,7 @@
             // 
             // btnStop
             // 
-            btnStop.Location = new Point(155, 149);
+            btnStop.Location = new Point(146, 188);
             btnStop.Name = "btnStop";
             btnStop.Size = new Size(124, 65);
             btnStop.TabIndex = 5;
@@ -100,11 +101,21 @@
             btnStop.UseVisualStyleBackColor = true;
             btnStop.Click += btnStop_Click;
             // 
+            // lbTimeNow
+            // 
+            lbTimeNow.AutoSize = true;
+            lbTimeNow.Location = new Point(12, 145);
+            lbTimeNow.Name = "lbTimeNow";
+            lbTimeNow.Size = new Size(94, 24);
+            lbTimeNow.TabIndex = 6;
+            lbTimeNow.Text = "Timer : --";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(12F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(471, 384);
+            Controls.Add(lbTimeNow);
             Controls.Add(btnStop);
             Controls.Add(btnStart);
             Controls.Add(gbLight);
@@ -117,6 +128,7 @@
             ((System.ComponentModel.ISupportInitialize)pbGreen).EndInit();
             gbLight.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -127,5 +139,6 @@
         private GroupBox gbLight;
         private Button btnStart;
         private Button btnStop;
+        private Label lbTimeNow;
     }
 }
