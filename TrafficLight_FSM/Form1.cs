@@ -32,7 +32,6 @@ namespace TrafficLight_FSM
 
     enum ETrafficLightState { Idle, Red, Green, Yellow }
 
-
     class TrafficLight
     {
         PictureBox pbRed, pbYellow, pbGreen;
@@ -42,7 +41,7 @@ namespace TrafficLight_FSM
         Stopwatch stopwatch;
         Thread thread;
         ManualResetEvent mre;
-        bool IsFirst = false;
+        bool IsFirst;
 
         public TrafficLight(PictureBox pbRed, PictureBox pbYellow, PictureBox pbGreen, Label lbTime)
         {
@@ -98,7 +97,7 @@ namespace TrafficLight_FSM
                 {
                     case ETrafficLightState.Red:
                         {
-                            if (IsFirst)
+                            if (IsFirst == true || timeNow >= 5)
                             {
                                 pbRed.BackColor = Color.Red;
                                 pbGreen.BackColor = Color.Black;
@@ -108,15 +107,6 @@ namespace TrafficLight_FSM
                                 stateNow = ETrafficLightState.Green;
 
                                 IsFirst = false;
-                            }
-                            else if (timeNow >= 5)
-                            {
-                                pbRed.BackColor = Color.Red;
-                                pbGreen.BackColor = Color.Black;
-                                pbYellow.BackColor = Color.Black;
-
-                                stopwatch.Restart();
-                                stateNow = ETrafficLightState.Green;
                             }
                         }
                         break;
