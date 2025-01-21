@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Threading;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace TrafficLight_FSM
@@ -28,6 +29,10 @@ namespace TrafficLight_FSM
             trafficLight.Stop();
         }
 
+        private void btnPause_Click(object sender, EventArgs e)
+        {
+            trafficLight.Pause();
+        }
     }
 
     enum ETrafficLightState { Idle, Red, Green, Yellow }
@@ -38,10 +43,11 @@ namespace TrafficLight_FSM
         Label lbTime;
 
         ETrafficLightState stateNow;
+        ETrafficLightState stateSave;
         Stopwatch stopwatch;
         Thread thread;
         ManualResetEvent mre;
-        bool IsFirst;
+        bool IsFirst = true;
 
         public TrafficLight(PictureBox pbRed, PictureBox pbYellow, PictureBox pbGreen, Label lbTime)
         {
@@ -67,8 +73,8 @@ namespace TrafficLight_FSM
 
         public void Start()
         {
-            stateNow = ETrafficLightState.Red;
-            IsFirst = true;
+            if(IsFirst)
+                SetState(ETrafficLightState.Red);
 
             //觸發 ManualResetEvent，讓所有等待的線程繼續執行。
             mre.Set();
@@ -78,6 +84,22 @@ namespace TrafficLight_FSM
         {
             // 將 ManualResetEvent 重置為未觸發狀態，使後續的線程再次被阻塞。
             mre.Reset();
+
+            SetState(ETrafficLightState.Red);
+            IsFirst = true;
+        }
+
+        public void SetState(ETrafficLightState state)
+        {
+            stateNow = state;
+            stateSave = state;
+        }
+
+        public void Pause()
+        {
+            // 將 ManualResetEvent 重置為未觸發狀態，使後續的線程再次被阻塞。
+            mre.Reset();
+            stateNow = stateSave;
         }
 
         void Run()
@@ -104,8 +126,7 @@ namespace TrafficLight_FSM
                                 pbYellow.BackColor = Color.Black;
 
                                 stopwatch.Restart();
-                                stateNow = ETrafficLightState.Green;
-
+                                SetState(ETrafficLightState.Green);
                                 IsFirst = false;
                             }
                         }
@@ -120,7 +141,7 @@ namespace TrafficLight_FSM
                                 pbYellow.BackColor = Color.Black;
 
                                 stopwatch.Restart();
-                                stateNow = ETrafficLightState.Yellow;
+                                SetState(ETrafficLightState.Yellow);
                             }
                         }
                         break;
@@ -134,7 +155,7 @@ namespace TrafficLight_FSM
                                 pbYellow.BackColor = Color.Yellow;
 
                                 stopwatch.Restart();
-                                stateNow = ETrafficLightState.Red;
+                                SetState(ETrafficLightState.Red);
                             }
                         }
                         break;

@@ -35,6 +35,7 @@
             btnStart = new Button();
             btnStop = new Button();
             lbTimeNow = new Label();
+            btnPause = new Button();
             ((System.ComponentModel.ISupportInitialize)pbRed).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbYellow).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbGreen).BeginInit();
@@ -93,7 +94,7 @@
             // 
             // btnStop
             // 
-            btnStop.Location = new Point(146, 188);
+            btnStop.Location = new Point(150, 188);
             btnStop.Name = "btnStop";
             btnStop.Size = new Size(124, 65);
             btnStop.TabIndex = 5;
@@ -110,11 +111,22 @@
             lbTimeNow.TabIndex = 6;
             lbTimeNow.Text = "Timer : --";
             // 
+            // btnPause
+            // 
+            btnPause.Location = new Point(288, 188);
+            btnPause.Name = "btnPause";
+            btnPause.Size = new Size(124, 65);
+            btnPause.TabIndex = 7;
+            btnPause.Text = "Pause";
+            btnPause.UseVisualStyleBackColor = true;
+            btnPause.Click += btnPause_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(12F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(471, 384);
+            Controls.Add(btnPause);
             Controls.Add(lbTimeNow);
             Controls.Add(btnStop);
             Controls.Add(btnStart);
@@ -140,5 +152,6 @@
         private Button btnStart;
         private Button btnStop;
         private Label lbTimeNow;
+        private Button btnPause;
     }
 }
