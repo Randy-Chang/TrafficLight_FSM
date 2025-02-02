@@ -1,3 +1,5 @@
+using TrafficLight_FSM.Scopes;
+
 namespace TrafficLight_FSM
 {
     internal static class Program
@@ -11,7 +13,9 @@ namespace TrafficLight_FSM
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+
+            Scope scope = new Scope();
+            Application.Run(Scope.mainForm);
         }
     }
 }

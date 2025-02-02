@@ -1,6 +1,6 @@
 ﻿namespace TrafficLight_FSM
 {
-    partial class Form1
+    partial class Mainform
     {
         /// <summary>
         ///  Required designer variable.
@@ -90,7 +90,6 @@
             btnStart.TabIndex = 4;
             btnStart.Text = "Start";
             btnStart.UseVisualStyleBackColor = true;
-            btnStart.Click += btnStart_Click;
             // 
             // btnStop
             // 
@@ -100,7 +99,6 @@
             btnStop.TabIndex = 5;
             btnStop.Text = "Stop";
             btnStop.UseVisualStyleBackColor = true;
-            btnStop.Click += btnStop_Click;
             // 
             // lbTimeNow
             // 
@@ -119,7 +117,6 @@
             btnPause.TabIndex = 7;
             btnPause.Text = "Pause";
             btnPause.UseVisualStyleBackColor = true;
-            btnPause.Click += btnPause_Click;
             // 
             // Form1
             // 
