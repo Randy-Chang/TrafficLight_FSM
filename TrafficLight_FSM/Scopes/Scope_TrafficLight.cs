@@ -10,11 +10,11 @@ namespace TrafficLight_FSM.Scopes
 
     internal partial class Scope
     {
-        public static TrafficLight trafficLight;
+        public static TrafficLight2 trafficLight;
 
         void InitTrafficLight()
         {
-            trafficLight = new TrafficLight(Scope.mainForm);
+            trafficLight = new TrafficLight2(Scope.mainForm);
         }
 
     }
