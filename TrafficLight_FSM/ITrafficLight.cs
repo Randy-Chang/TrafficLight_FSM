@@ -13,5 +13,7 @@ namespace TrafficLight_FSM
         void Stop();
 
         void Pause();
+
+        void SetDurations(int red, int green, int yellow);
     }
 }

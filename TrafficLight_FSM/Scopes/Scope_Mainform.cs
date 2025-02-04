@@ -26,6 +26,11 @@ namespace TrafficLight_FSM.Scopes
             Scope.trafficLight.Pause();
         }
 
+        public void SetDurations(int red, int green, int yellow)
+        {
+            Scope.trafficLight.SetDurations(red, green, yellow);
+        }
+
         public void Start()
         {
             Scope.trafficLight.Start();

@@ -24,6 +24,20 @@ namespace TrafficLight_FSM
             btnStart.Click += (s, e) => pack.Start();
             btnPause.Click += (s, e) => pack.Pause();
             btnStop.Click += (s, e) => pack.Stop();
+
+            btnSettingDuration.Click += (s, e) =>
+            {
+                if (int.TryParse(tbRedLigtDuration.Text, out int red) &&
+                    int.TryParse(tbGreenLigtDuration.Text, out int green) &&
+                    int.TryParse(tbYellowLigtDuration.Text, out int yellow))
+                {
+                    pack.SetDurations(red, green, yellow);
+                }
+                else
+                {
+                    MessageBox.Show("請輸入有效的數字！", "輸入錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            };
         }
 
         #region 實作 ITrafficLightUIPack 介面
@@ -36,26 +50,16 @@ namespace TrafficLight_FSM
         #endregion
 
         #region 實作 ITrafficLightUIController 介面
-        public void ShowRedLight()
+        private void UpdateTrafficLight(Color red, Color yellow, Color green)
         {
-            pbRed.BackColor = Color.Red;
-            pbYellow.BackColor = Color.Gray;
-            pbGreen.BackColor = Color.Gray;
+            pbRed.BackColor = red;
+            pbYellow.BackColor = yellow;
+            pbGreen.BackColor = green;
         }
 
-        public void ShowYellowLight()
-        {
-            pbRed.BackColor = Color.Gray;
-            pbYellow.BackColor = Color.Yellow;
-            pbGreen.BackColor = Color.Gray;
-        }
-
-        public void ShowGreenLight()
-        {
-            pbRed.BackColor = Color.Gray;
-            pbYellow.BackColor = Color.Gray;
-            pbGreen.BackColor = Color.Green;
-        }
+        public void ShowRedLight() => UpdateTrafficLight(Color.Red, Color.Gray, Color.Gray);
+        public void ShowYellowLight() => UpdateTrafficLight(Color.Gray, Color.Yellow, Color.Gray);
+        public void ShowGreenLight() => UpdateTrafficLight(Color.Gray, Color.Gray, Color.Green);
 
         public void EnableStartButton(bool enable)
         {

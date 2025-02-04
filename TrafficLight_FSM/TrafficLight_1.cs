@@ -10,7 +10,7 @@ using ToolFunctions_ByLuke;
 namespace TrafficLight_FSM
 {
     public enum EKey { Auto, Pause, Resume }
-    public enum ES1 { Idle, Pause, Actice }
+    public enum ES1 { Idle, Pause, Active }
 
     public partial class TrafficLight : ITrafficLight
     {
@@ -23,6 +23,9 @@ namespace TrafficLight_FSM
         Stopwatch stopwatch;
         Thread thread;
         bool IsFirst = true;
+        int redDuration = 5;
+        int greenDuration = 5;
+        int yellowDuration = 5;
 
         public TrafficLight(ITrafficLightUIController uIController)
         {
@@ -38,20 +41,27 @@ namespace TrafficLight_FSM
             thread.Start();
         }
 
+        public void SetDurations(int red, int green, int yellow)
+        {
+            redDuration = red > 0 ? red : 5;        // 預防錯誤輸入
+            greenDuration = green > 0 ? green : 5;
+            yellowDuration = yellow > 0 ? yellow : 5;
+        }
+
         public void Start()
         {
             if (IsFirst)
-                SetState(ES1.Actice, ETrafficLightState.Red);
+                SetState(ES1.Active, ETrafficLightState.Red);
             else
-                SetState(ES1.Actice, stateSave);
+                SetState(ES1.Active, stateSave);
 
             stopwatch.Start();
         }
 
         public void Stop()
         {
-            SetState(ES1.Idle);
-            IsFirst = true;
+            SetState(ES1.Idle); // 讓 FSM 進入待機模式
+            IsFirst = true;      // 確保下一次 Start() 會從紅燈開始
             stopwatch.Reset();
         }
 
@@ -61,97 +71,91 @@ namespace TrafficLight_FSM
             stopwatch.Stop();
         }
 
-        void SetState(ES1 s1)
+        void SetState(ES1 s1, ETrafficLightState state = default)
         {
-            this.S1 = s1;
-        }
-
-        void SetState(ES1 s1, ETrafficLightState state)
-        {
-            this.S1 = s1;
-            this.stateNow = state;
-            this.stateSave = state;
-        }
-
-        void SetState(ETrafficLightState state)
-        {
-            stateNow = state;
-            stateSave = state;
+            S1 = s1;
+            if (state != default)
+            {
+                stateNow = state;
+                stateSave = state;
+            }
         }
 
         void RunFSM()
         {
-            while (true)
+            while (true) // 讓執行緒永久運行
             {
                 Thread.Sleep(20); // 避免過度佔用 CPU
 
                 switch (S1)
                 {
                     case ES1.Idle:
-                        { 
-
+                        {
+                            // 進入待機模式，不做任何事
+                            uIController.ShowTimerState("Idle");
                         }
                         break;
 
                     case ES1.Pause:
                         {
-
+                            uIController.ShowTimerState("Paused");
                         }
                         break;
 
-                    case ES1.Actice:
+                    case ES1.Active:
                         {
                             int timeNow = Convert.ToInt32(stopwatch.Elapsed.TotalSeconds);
                             string text = $"Timer : {timeNow}";
-                            uIController.ShowTimerState(text);// 更新碼表stopwatch
+                            uIController.ShowTimerState(text);
 
                             switch (stateNow)
                             {
                                 case ETrafficLightState.Red:
                                     {
-                                        if (IsFirst == true || timeNow >= 5)
+                                        if (IsFirst)
                                         {
-                                            uIController.ShowRedLight();
-
                                             stopwatch.Restart();
-                                            SetState(ETrafficLightState.Green);
-                                            IsFirst = false;
+                                            IsFirst = false; // 設為 false，避免重複進入
                                         }
+                                        else if (timeNow >= redDuration)
+                                        {
+                                            SetState(ES1.Active, ETrafficLightState.Green);
+                                            stopwatch.Restart();
+                                        }
+
+                                        uIController.ShowRedLight();
                                     }
                                     break;
 
                                 case ETrafficLightState.Green:
                                     {
-                                        if (timeNow >= 5)
+                                        if (timeNow >= greenDuration)
                                         {
-                                            uIController.ShowGreenLight();
-
+                                            SetState(ES1.Active, ETrafficLightState.Yellow);
                                             stopwatch.Restart();
-                                            SetState(ETrafficLightState.Yellow);
                                         }
+
+                                        uIController.ShowGreenLight();
                                     }
                                     break;
 
                                 case ETrafficLightState.Yellow:
                                     {
-                                        if (timeNow >= 5)
+                                        if (timeNow >= yellowDuration)
                                         {
-                                            uIController.ShowYellowLight();
-
+                                            SetState(ES1.Active, ETrafficLightState.Red);
                                             stopwatch.Restart();
-                                            SetState(ETrafficLightState.Red);
                                         }
+
+                                        uIController.ShowYellowLight();
                                     }
                                     break;
                             }
                         }
                         break;
-
                 }
-                
-
             }
-
         }
+
     }
 }
