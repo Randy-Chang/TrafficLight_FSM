@@ -6,15 +6,30 @@ using System.Threading.Tasks;
 
 namespace TrafficLight_FSM.Scopes
 {
-    public enum ETrafficLightState { Idle, Red, Green, Yellow }
+    enum ETrafficLightType { SwitchCase, StatePattern}
 
     internal partial class Scope
     {
-        public static TrafficLight2 trafficLight;
+        public static ITrafficLight trafficLight;
+        public static ETrafficLightType eTrafficLightType = ETrafficLightType.SwitchCase;
 
         void InitTrafficLight()
         {
-            trafficLight = new TrafficLight2(Scope.mainForm);
+            switch (eTrafficLightType)
+            {
+                case ETrafficLightType.SwitchCase:
+                    {
+                        trafficLight = new TrafficLight1(Scope.mainForm);
+                    }
+                    break;
+
+                    case ETrafficLightType.StatePattern:
+                    {
+                        trafficLight = new TrafficLight2(Scope.mainForm);
+                    }
+                    break;
+            }
+            
         }
 
     }

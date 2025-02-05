@@ -104,7 +104,6 @@ namespace TrafficLight_FSM
     }
     #endregion
 
-
     public class TrafficLight2 : ITrafficLight
     {
         internal ITrafficLightUIController uIController;
@@ -200,6 +199,5 @@ namespace TrafficLight_FSM
             }
         }
     }
-
 
 }

@@ -12,4 +12,8 @@
     <ProjectReference Include="..\ToolFunctions_ByLuke\ToolFunctions_ByLuke.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace TrafficLight_FSM
 {
+    public enum ETrafficLightState { Red, Green, Yellow }
+
     public interface ITrafficLight
     {
         void Start();

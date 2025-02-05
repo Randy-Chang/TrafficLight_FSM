@@ -12,7 +12,7 @@ namespace TrafficLight_FSM
     public enum EKey { Auto, Pause, Resume }
     public enum ES1 { Idle, Pause, Active }
 
-    public partial class TrafficLight : ITrafficLight
+    public partial class TrafficLight1 : ITrafficLight
     {
         ITrafficLightUIController uIController;
         ES1 S1 { get; set; }
@@ -27,12 +27,12 @@ namespace TrafficLight_FSM
         int greenDuration = 5;
         int yellowDuration = 5;
 
-        public TrafficLight(ITrafficLightUIController uIController)
+        public TrafficLight1(ITrafficLightUIController uIController)
         {
             this.uIController = uIController;
 
             S1 = ES1.Idle;
-            stateNow = ETrafficLightState.Idle;
+            stateNow = ETrafficLightState.Red;
 
             stopwatch = new Stopwatch();
 
