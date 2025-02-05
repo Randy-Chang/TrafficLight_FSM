@@ -13,24 +13,25 @@ namespace TrafficLight_FSM.Scopes
         public static ITrafficLight trafficLight;
         public static ETrafficLightType eTrafficLightType = ETrafficLightType.SwitchCase;
 
-        void InitTrafficLight()
+        public static void InitTrafficLight()
         {
             switch (eTrafficLightType)
             {
                 case ETrafficLightType.SwitchCase:
-                    {
-                        trafficLight = new TrafficLight1(Scope.mainForm);
-                    }
+                    trafficLight = new TrafficLight1(mainForm);
                     break;
 
-                    case ETrafficLightType.StatePattern:
-                    {
-                        trafficLight = new TrafficLight2(Scope.mainForm);
-                    }
+                case ETrafficLightType.StatePattern:
+                    trafficLight = new TrafficLight2(mainForm);
                     break;
             }
-            
         }
 
+        public static void SetTrafficLightType(ETrafficLightType type)
+        {
+            trafficLight.Exit();
+            eTrafficLightType = type;
+            InitTrafficLight();
+        }
     }
 }

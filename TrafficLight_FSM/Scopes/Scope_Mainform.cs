@@ -21,6 +21,11 @@ namespace TrafficLight_FSM.Scopes
 
     class MainformPack : ITrafficLight
     {
+        public void Exit()
+        {
+            Scope.trafficLight.Exit();
+        }
+
         public void Pause()
         {
             Scope.trafficLight.Pause();

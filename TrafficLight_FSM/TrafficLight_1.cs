@@ -9,19 +9,18 @@ using ToolFunctions_ByLuke;
 
 namespace TrafficLight_FSM
 {
-    public enum EKey { Auto, Pause, Resume }
-    public enum ES1 { Idle, Pause, Active }
+    public enum ES1 { Idle, Pause, Active, Exit }
 
     public partial class TrafficLight1 : ITrafficLight
     {
         ITrafficLightUIController uIController;
         ES1 S1 { get; set; }
-        EKey key { get; set; }
 
         ETrafficLightState stateNow;
         ETrafficLightState stateSave;
         Stopwatch stopwatch;
         Thread thread;
+        private bool IsRunning = true;
         bool IsFirst = true;
         int redDuration = 5;
         int greenDuration = 5;
@@ -71,6 +70,12 @@ namespace TrafficLight_FSM
             stopwatch.Stop();
         }
 
+        public void Exit()
+        {
+            SetState(ES1.Exit);
+            stopwatch.Stop();
+        }
+
         void SetState(ES1 s1, ETrafficLightState state = default)
         {
             S1 = s1;
@@ -81,9 +86,11 @@ namespace TrafficLight_FSM
             }
         }
 
+
+
         void RunFSM()
         {
-            while (true) // 讓執行緒永久運行
+            while (IsRunning) // 讓執行緒永久運行
             {
                 Thread.Sleep(20); // 避免過度佔用 CPU
 
@@ -100,6 +107,12 @@ namespace TrafficLight_FSM
                         {
                             uIController.ShowTimerState("Paused");
                         }
+                        break;
+
+                    case ES1.Exit:
+                    {
+                        IsRunning = false;
+                    }
                         break;
 
                     case ES1.Active:
@@ -156,6 +169,7 @@ namespace TrafficLight_FSM
                 }
             }
         }
+
 
     }
 }

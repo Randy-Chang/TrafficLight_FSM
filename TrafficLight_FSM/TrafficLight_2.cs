@@ -104,16 +104,32 @@ namespace TrafficLight_FSM
     }
     #endregion
 
+    #region 離開狀態
+    public class ExitState : ITrafficLightState
+    {
+        public void EnterState(TrafficLight2 trafficLight)
+        {
+            trafficLight.uIController.ShowTimerState("Exit");
+        }
+
+        public void UpdateState(TrafficLight2 trafficLight)
+        {
+            // Idle 不做任何事
+        }
+    }
+    #endregion
+
     public class TrafficLight2 : ITrafficLight
     {
         internal ITrafficLightUIController uIController;
         ES1 S1 { get; set; }  // 維持系統模式
-        EKey key { get; set; }
 
         ITrafficLightState stateNow;
         internal ITrafficLightState stateSave = new IdleState();
         internal Stopwatch stopwatch;
         Thread thread;
+        bool IsRunning = true;
+
         bool IsFirst = true;
         internal int redDuration = 5;
         internal int greenDuration = 5;
@@ -166,6 +182,12 @@ namespace TrafficLight_FSM
             stopwatch.Stop();
         }
 
+        public void Exit()
+        {
+            SetState(ES1.Exit, new ExitState());
+            stopwatch.Stop();
+        }
+
         internal void SetState(ES1 s1, ITrafficLightState state)
         {
             S1 = s1;
@@ -176,7 +198,7 @@ namespace TrafficLight_FSM
 
         private void RunFSM()
         {
-            while (true)
+            while (IsRunning)
             {
                 Thread.Sleep(20);
 

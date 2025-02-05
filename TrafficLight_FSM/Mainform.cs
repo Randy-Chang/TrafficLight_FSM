@@ -5,6 +5,7 @@ using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using ToolFunctions_ByLuke;
+using TrafficLight_FSM.Scopes;
 
 namespace TrafficLight_FSM
 {
@@ -19,6 +20,8 @@ namespace TrafficLight_FSM
         {
             InitializeComponent();
             this.pack = pack ?? throw new ArgumentNullException(nameof(pack));
+
+            InitializeTrafficLightTypeComboBox();
 
             // 綁定按鈕點擊事件，用 Lambda 表達式
             btnStart.Click += (s, e) => pack.Start();
@@ -39,6 +42,27 @@ namespace TrafficLight_FSM
                 }
             };
         }
+
+        #region TrafficLightTypeComboBox 相關函式
+        private void InitializeTrafficLightTypeComboBox()
+        {
+            cmbTrafficLightType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTrafficLightType.Items.Add(ETrafficLightType.SwitchCase.ToString());
+            cmbTrafficLightType.Items.Add(ETrafficLightType.StatePattern.ToString());
+            cmbTrafficLightType.SelectedIndex = (int)Scope.eTrafficLightType;
+            cmbTrafficLightType.SelectedIndexChanged += CmbTrafficLightType_SelectedIndexChanged;
+
+            Controls.Add(cmbTrafficLightType);
+        }
+
+        private void CmbTrafficLightType_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (cmbTrafficLightType.SelectedIndex == -1) return;
+
+            // 更新 Scope 的 eTrafficLightType
+            Scope.SetTrafficLightType((ETrafficLightType)cmbTrafficLightType.SelectedIndex);
+        }
+        #endregion
 
         #region 實作 ITrafficLightUIPack 介面
         public PictureBox RedLight => pbRed;

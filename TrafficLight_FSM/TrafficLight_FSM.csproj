@@ -9,11 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ToolFunctions_ByLuke\ToolFunctions_ByLuke.csproj" />
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="NewFolder\" />
+    <ProjectReference Include="..\ToolFunctions_ByLuke\ToolFunctions_ByLuke.csproj" />
   </ItemGroup>
 
 </Project>
